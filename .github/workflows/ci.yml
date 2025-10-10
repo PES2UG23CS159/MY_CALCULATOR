@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: ["**"]
+    branches: [""]
   pull_request:
-    branches: ["**"]
+    branches: [""]
 
 jobs:
   # ---------------------------------------------------
@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -122,7 +122,7 @@ jobs:
           pylint src/ --output-format=text > lint_report.txt || true
           echo "Saved lint report to lint_report.txt"
           score_line=$(grep -E "rated at" lint_report.txt || true)
-          score=$(echo "$score_line" | sed -n 's/.*rated at \([0-9.]*\)\/10.*/\1/p')
+          score=$(echo "$score_line" | sed -n 's/.rated at \([0-9.]\)\/10.*/\1/p')
           echo "Pylint score: ${score:-not-found}"
           if [ -z "$score" ]; then
             echo "Could not determine pylint score"
